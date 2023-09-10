@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Join Member List Generator (.CSV)</title>
+
+    <meta name="robots" content="max-snippet:-1, max-image-preview:large, max-video-preview:-1"/>
+    <meta name="description" content="Easily make a list of your YouTube members. Upload the .CSV file from the YouTube dashboard and see the list."/>
+    <link rel="canonical" href="https://youtubememberlist.vercel.app/" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="YouTube Join Member List Generator (.CSV)" />
+    <meta property="og:description" content="Easily make a list of your YouTube members. Upload the .CSV file from the YouTube dashboard and see the list." />
+    <meta property="og:url" content="https://youtubememberlist.vercel.app/" />
+    <meta property="og:site_name" content="YouTube Join Member List Generator (.CSV)" />
+    <meta property="og:image" content="https://youtubememberlist.vercel.app/image.png" />
+    <meta property="og:image:secure_url" content="https://youtubememberlist.vercel.app/image.png" />
+    <meta property="og:image:width" content="1600" />
+    <meta property="og:image:height" content="900" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:description" content="Easily make a list of your YouTube members. Upload the .CSV file from the YouTube dashboard and see the list." />
+    <meta name="twitter:title" content="YouTube Join Member List Generator (.CSV)" />
+    <meta name="twitter:site" content="@ugur2nd" />
+    <meta name="twitter:image" content="https://youtubememberlist.vercel.app/image.png" />
+    <meta name="twitter:creator" content="@ugur2nd" />
+    <meta name="MobileOptimized" content="510">
+    <meta name="HandheldFriendly" content="true"/> 
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <a href="/"><h1>YouTube Join Member List Generator (.CSV)</h1></a>
+    <input type="file" id="csvFile"><br>
+    <button onclick="handleFile()">Send</button>
+
+    <hr>
+
+    <div id="results"></div>
+
+    <script>
+function handleFile() {
+    const fileInput = document.getElementById('csvFile');
+    const resultsDiv = document.getElementById('results');
+
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function(event) {
+        const csv = event.target.result;
+
+        const lines = csv.split('\n');
+        const data = [];
+
+        let ayMi = "";
+        for (let i = 1; i < lines.length; i++) {
+            const columns = lines[i].split(',');
+
+            const isim = columns[0];
+            const seviye = columns[2];
+            const ay = Number(columns[4]).toFixed(1);
+
+            if (i === 1) {
+                ayMi = columns[4].startsWith("Üye") ? "ay" : "month";
+            }
+
+            if (!isNaN(ay)) {
+                data.push({ isim, seviye, ay });
+            }
+        }
+
+        data.sort((a, b) => b.ay - a.ay);
+
+        let listHTML = "<ol>";
+        data.forEach(item => {
+            listHTML += `<li><strong>${item.isim}</strong> (${item.seviye} / <em>${item.ay} ${ayMi}</em>)</li>`;
+        });
+        listHTML += "</ol>";
+
+        const iframeCode = `<iframe src="https://youtubememberlist.vercel.app/list.html?q=${encodeURIComponent(listHTML)}" width="100%" height="500px" border="0"></iframe>`;
+        const htmlCode = `<ol>${listHTML}</ol>`;
+
+        resultsDiv.innerHTML = `
+            <strong>Iframe Code:</strong><br>
+            <textarea>${iframeCode}</textarea>
+            <hr>
+            <strong>HTML Code:</strong><br>
+            <textarea>${htmlCode}</textarea>
+            <hr>
+            <strong>HTML Preview:</strong><br>
+            ${listHTML}
+        `;
+    };
+
+    reader.readAsText(file);
+}
+    </script>
+
+<a href="https://twitter.com/intent/follow?screen_name=ugur2nd" class="twitter" style="background:#00acee;color:#fff;padding:5px 15px;border-radius:10px 0 0 0;text-decoration:none !important;position:fixed;bottom:0;right:0;z-index:9999999999999999999;" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter"></i> @ugur2nd</a>
+
+</body>
+</html>
