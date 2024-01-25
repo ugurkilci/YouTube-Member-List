@@ -76,7 +76,12 @@ function handleFile() {
                 ayMi = columns[4].startsWith("Üye") ? "ay" : "ay";
             }
 
-            if (!isNaN(ay)) {
+            // if (!isNaN(ay)) {
+            //     data.push({ isim, seviye, ay });
+            // }
+
+            // "1. seviye" ve "2. seviye" hariç bırakma kontrolü
+            if (!isNaN(ay) && seviye !== "1. seviye" && seviye !== "2. seviye") {
                 data.push({ isim, seviye, ay });
             }
         }
